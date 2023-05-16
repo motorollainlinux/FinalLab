@@ -1,12 +1,3 @@
-/*Разработать программу «Домашняя бухгалтерия», которая выполняет 
-следующие функции:
-1- Запись траты в файл.
-2- Запись прихода денежных средств в файл.
-3- Расчет баланса на счетах.
-4- Расчет % для каждой категории трат, относительно всех трат за 
-последний месяц.
-5- Расчет % для каждой категории трат, относительно всех трат.
-*/
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -27,6 +18,7 @@ class Balance {
         this->money = money;
     }
     void ChangeCategory (string thisCategory, int Switch) {
+        std::cout << "category...\n";
         map <int, string> FileList; 
         ifstream file;
         file.open(Category);
@@ -42,18 +34,19 @@ class Balance {
             }
             FileList[i] = num + " " + fileCategory + "\n";
         }
-        if (!CategoryFound) {
+        if (!CategoryFound) {std::cout << Switch << "2\n";
             FileList[i+1] = Switch + " " + thisCategory + "\n";
         }
         file.close();
         ofstream fout;
         fout.open(Category);
-        for (int j = 0; !fout.eof(); j++) {
+        for (int j = 0; j <= i+1; j++) {
             fout << FileList[j];
         }
         fout.close();
     }
     void MoneyTransaction(string thisCategory, int Switch) {
+        std::cout << "it's work...\n";
         ofstream file;
         file.open(MoneyLog);
         time_t mon = time(NULL) / 1036800;
@@ -62,7 +55,8 @@ class Balance {
             ChangeCategory(thisCategory, Switch);
         } else if (Switch < 0) {
             file << "- " << Switch << " " << thisCategory << " " << mon << "\n";
-            ChangeCategory(thisCategory, Switch);
+            ChangeCategory(thisCategory, Switch); 
+            std::cout << "1\n";
         }
         file.close();
     }
@@ -144,7 +138,8 @@ class Balance {
     }
 };
 int main() {
-    Balance balance1 = new Balance("Moneylogbalance1.txt", "Categorybalance1", 10000);
+    Balance* balance1 = new Balance("Moneylogbalance1.txt", "Categorybalance1.txt", 10000);
+    //std::cout << "main is normal\n";
     balance1->MoneyTransaction("Transport", -60);
     balance1->MoneyTransaction("Business", -1000);
     balance1->MoneyTransaction("Real_estate", -15000);
@@ -152,4 +147,7 @@ int main() {
     balance1->MoneyTransaction("Transport", -60);
     balance1->MoneyTransaction("Salary", 20000);
     balance1->MoneyTransaction("food", -1000);
+    balance1->CategryCount();
+    balance1->BalanceCounting();
+    return 0;
 }
