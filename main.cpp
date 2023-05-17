@@ -18,7 +18,6 @@ class Balance {
         this->money = money;
     }
     void ChangeCategory (string thisCategory, int Switch) {
-        std::cout << "category...\n";
         map <int, string> FileList; 
         ifstream file;
         file.open(Category);
@@ -26,27 +25,28 @@ class Balance {
         int num;
         bool CategoryFound = false;
         int i = 0;
-        for (; !file.eof(); i++) {
-            file >> num >> fileCategory;
+        for (; file >> num >> fileCategory; i++) {
             if (thisCategory == fileCategory) {
                 num += Switch;
                 CategoryFound = true;
             }
-            FileList[i] = num + " " + fileCategory + "\n";
+            string str = num + " " + fileCategory + "\n";
+            FileList[i] = str;
         }
-        if (!CategoryFound) {std::cout << Switch << "2\n";
-            FileList[i+1] = Switch + " " + thisCategory + "\n";
+        if (!CategoryFound) {
+            std::cout << Switch << "\n";
+            i++;
+            FileList[i] = Switch + " " + thisCategory + "\n";
         }
         file.close();
         ofstream fout;
         fout.open(Category);
-        for (int j = 0; j <= i+1; j++) {
+        for (int j = 0; j <= i; j++) {
             fout << FileList[j];
         }
         fout.close();
     }
     void MoneyTransaction(string thisCategory, int Switch) {
-        std::cout << "it's work...\n";
         ofstream file;
         file.open(MoneyLog);
         time_t mon = time(NULL) / 1036800;
@@ -56,7 +56,6 @@ class Balance {
         } else if (Switch < 0) {
             file << "- " << Switch << " " << thisCategory << " " << mon << "\n";
             ChangeCategory(thisCategory, Switch); 
-            std::cout << "1\n";
         }
         file.close();
     }
@@ -139,7 +138,6 @@ class Balance {
 };
 int main() {
     Balance* balance1 = new Balance("Moneylogbalance1.txt", "Categorybalance1.txt", 10000);
-    //std::cout << "main is normal\n";
     balance1->MoneyTransaction("Transport", -60);
     balance1->MoneyTransaction("Business", -1000);
     balance1->MoneyTransaction("Real_estate", -15000);
